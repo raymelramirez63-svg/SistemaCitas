@@ -1,6 +1,59 @@
 Sistema de Gestión de Citas Médicas 
 
 <img width="1919" height="919" alt="image" src="https://github.com/user-attachments/assets/5ab95fe8-ecfa-42dd-a73d-b8b9f4e96aad" />
+1. Análisis del problema
+Qué problema tiene la clínica: Actualmente, la clínica sufre de desorganización debido a un proceso manual basado en llamadas y hojas de cálculo. Esto provoca citas duplicadas, dificultad para consultar la disponibilidad real de los médicos, mala gestión de las cancelaciones, pérdida de tiempo repitiendo datos y una falta total de comunicación automática (recordatorios) con los pacientes.
+
+Qué módulos identifica: 1.  Módulo de Entidades Básicas: Gestión de Pacientes, Especialidades y Médicos.
+2.  Módulo de Agenda: Gestión de Citas (agendar, consultar, reprogramar y cancelar).
+3.  Módulo de Utilidades: Validaciones globales y Notificaciones.
+
+Qué funcionalidades pertenecen a la primera versión: Registrar pacientes, médicos y especialidades; asignar especialidades a los médicos; agendar, consultar, cancelar y reprogramar citas; y enviar notificaciones de confirmación o cambios por correo.
+
+Qué funcionalidades deberían dejarse para versiones futuras: Aplicando el principio YAGNI, se descartan para esta versión: facturación, recetas médicas, historial clínico, seguros médicos, telemedicina, chat médico e inteligencia artificial. Estas requieren un análisis más profundo y no solucionan el problema urgente de la agenda.
+
+2. Diseño orientado a objetos
+Basado en el principio de Separación de Responsabilidades (SoC) y el de Responsabilidad Única (SRP), el sistema se divide en entidades (modelos) y servicios lógicos.
+
+Clases principales y sus atributos:
+
+Paciente:
+
+Atributos: Id (entero), Nombre (texto), Email (texto).
+
+Especialidad:
+
+Atributos: Id (entero), Nombre (texto).
+
+Medico:
+
+Atributos: Id (entero), Nombre (texto), Especialidad (Objeto tipo Especialidad).
+
+Cita:
+
+Atributos: Id (entero), Paciente (Objeto tipo Paciente), Medico (Objeto tipo Medico), FechaHora (Fecha y hora), EstaCancelada (booleano).
+
+Clases de Servicio y Métodos principales:
+
+ClinicaService (Gestión de registros):
+
+Métodos: RegistrarPaciente(), RegistrarEspecialidad(), RegistrarMedico(), ObtenerPacientes(), ObtenerMedicos().
+
+CitaService (Gestión de la agenda):
+
+Métodos: AgendarCita(), ConsultarPorPaciente(), ConsultarPorMedico(), CancelarCita(), ReprogramarCita().
+
+Validador (Clase estática de utilidades):
+
+Método: ValidarTexto().
+
+Relaciones entre clases:
+
+Asociación / Agregación: Un Medico tiene una Especialidad. La clase Medico contiene una propiedad que hace referencia a la clase Especialidad.
+
+Asociación Múltiple: Una Cita relaciona a un Paciente con un Medico en un momento específico. La clase Cita contiene instancias de ambas clases.
+
+Inyección de Dependencias (Realización): CitaService no crea notificaciones directamente, sino que depende de la interfaz INotificador y de la interfaz IClinicaRepositorio. Cualquier clase que implemente INotificador (como EmailNotificador) se relaciona con el servicio a través de su constructor.
 Este proyecto es una aplicación de consola desarrollada en C# y .NET 8 que permite a una clínica médica gestionar su agenda de manera eficiente, abandonando los procesos manuales propensos a errores. El sistema permite registrar pacientes, médicos y especialidades, así como agendar, reprogramar y cancelar citas médicas evitando conflictos de horarios. Todo el código está estructurado bajo una arquitectura modular estricta que aplica los principios arquitectónicos modernos: SOLID, SoC, DRY, KISS y YAGNI.
 
 Comenzando 
